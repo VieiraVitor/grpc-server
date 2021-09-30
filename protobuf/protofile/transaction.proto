@@ -1,0 +1,22 @@
+syntax = "proto3";
+package transaction;
+option go_package = "/pb";
+
+service TransactionService {
+    rpc SaveTransaction(Payment) returns (Empty) {}
+}
+
+message Payment {
+    int32 id = 1;
+    double amount = 2;
+    string description = 3;
+    CreditCard creditCard = 4;
+}
+
+message CreditCard {
+    string number = 1;
+    string name = 2;
+    int32 cvv = 3;
+}
+
+message Empty {}
