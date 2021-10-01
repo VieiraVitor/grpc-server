@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -31,29 +32,29 @@ func main() {
 	}
 	defer conn.Close()
 
-	TransactionServiceClient := pb.NewTransactionServiceClient(conn)
+	transactionServiceClient := pb.NewTransactionServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// Payment.ID = 1
-	// Payment.CreditCard.Number = "1234"
-	// Payment.CreditCard.Name = "Vitor"
-	// Payment.CreditCard.CVV = 123
-	// Payment.Amount = 1000
-	// Payment.Description = "Novo produto"
-	_, err = TransactionServiceClient.SaveTransaction(ctx,
-		&pb.Payment{
-			Id:          1,
-			Amount:      1000,
+	var i int32
+	var amount float64
+	for i = 0; i < 100; i++ {
+		amount++
+		PaymentRequest := &pb.PaymentRequest{
+			Id:          i,
+			Amount:      amount,
 			Description: "Novo produto",
 			CreditCard: &pb.CreditCard{
 				Number: "1234",
 				Name:   "Vitor",
 				Cvv:    123,
 			},
-		})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		}
+		paymentResponse, err := transactionServiceClient.SaveTransaction(ctx, PaymentRequest)
+		if err != nil {
+			log.Fatalf("could not greet: %v", err)
+		}
+		fmt.Printf("%s - ID: %d\n", paymentResponse.Response, paymentResponse.Id)
 	}
 
 	log.Printf("Sucess: !")
