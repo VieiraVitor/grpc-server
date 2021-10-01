@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 
@@ -13,9 +14,9 @@ type TransactionService struct {
 	pb.UnimplementedTransactionServiceServer
 }
 
-func (t *TransactionService) SaveTransaction(ctx context.Context, in *pb.Payment) (*pb.Empty, error) {
-
-	return &pb.Empty{}, nil
+func (t *TransactionService) SaveTransaction(ctx context.Context, in *pb.PaymentRequest) (*pb.PaymentResponse, error) {
+	fmt.Println(in)
+	return &pb.PaymentResponse{Id: in.Id, Response: "Payment completed"}, nil
 }
 
 const port = ":50051"
