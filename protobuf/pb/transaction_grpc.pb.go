@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TransactionServiceClient interface {
-	SaveTransaction(ctx context.Context, in *Payment, opts ...grpc.CallOption) (*Empty, error)
+	SaveTransaction(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error)
 }
 
 type transactionServiceClient struct {
@@ -29,8 +29,8 @@ func NewTransactionServiceClient(cc grpc.ClientConnInterface) TransactionService
 	return &transactionServiceClient{cc}
 }
 
-func (c *transactionServiceClient) SaveTransaction(ctx context.Context, in *Payment, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *transactionServiceClient) SaveTransaction(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error) {
+	out := new(PaymentResponse)
 	err := c.cc.Invoke(ctx, "/transaction.TransactionService/SaveTransaction", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *transactionServiceClient) SaveTransaction(ctx context.Context, in *Paym
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility
 type TransactionServiceServer interface {
-	SaveTransaction(context.Context, *Payment) (*Empty, error)
+	SaveTransaction(context.Context, *PaymentRequest) (*PaymentResponse, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -50,7 +50,7 @@ type TransactionServiceServer interface {
 type UnimplementedTransactionServiceServer struct {
 }
 
-func (UnimplementedTransactionServiceServer) SaveTransaction(context.Context, *Payment) (*Empty, error) {
+func (UnimplementedTransactionServiceServer) SaveTransaction(context.Context, *PaymentRequest) (*PaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveTransaction not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
@@ -67,7 +67,7 @@ func RegisterTransactionServiceServer(s grpc.ServiceRegistrar, srv TransactionSe
 }
 
 func _TransactionService_SaveTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Payment)
+	in := new(PaymentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func _TransactionService_SaveTransaction_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/transaction.TransactionService/SaveTransaction",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TransactionServiceServer).SaveTransaction(ctx, req.(*Payment))
+		return srv.(TransactionServiceServer).SaveTransaction(ctx, req.(*PaymentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
