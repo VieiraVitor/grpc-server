@@ -1,8 +1,9 @@
 import grpc from 'k6/net/grpc';
 import { sleep } from 'k6';
+import { check } from 'k6';
 export let options = {
-	vus: 5000,
-	duration: '10s',
+	vus: 10000,
+	iterations: 100000,
 }
 
 const client = new grpc.Client();
@@ -23,7 +24,10 @@ export default () => {
 			cvv: 123,
 		}
 	};
-	client.invoke('transaction.TransactionService/SaveTransaction', data);
+	const res = client.invoke('transaction.TransactionService/SaveTransaction', data);
+	check(res, {
+		'is status 200': (r) => r && r.status === grpc.StatusOK,
+	});
 
 	client.close();
 	sleep(1);

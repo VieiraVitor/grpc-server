@@ -6,3 +6,7 @@ ghz usage:
 
 To get a html output:
 ./ghz --insecure --proto ./protobuf/protofile/transaction.proto --call transaction.TransactionService.SaveTransaction -d '{"id": 1, "amount": 1000, "description": "novo produto", "creditCard": {"number": "1234", "name": "Vitor", "cvv": 123}}' 0.0.0.0:50051 -O html -o html
+
+
+Example to test:
+./ghz --insecure -n 10000 -c 1000 --proto ./protobuf/protofile/transaction.proto --call transaction.TransactionService.SaveTransaction -d '{"id": 1, "amount": 1000, "description": "novo produto", "creditCard": {"number": "1234", "name": "Vitor", "cvv": 123}}' -m '{"timestamp":"{{.TimestampUnix}}"}' 0.0.0.0:50051
